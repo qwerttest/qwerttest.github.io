@@ -49,28 +49,15 @@
         .product-image {
             width: 120px;
             height: 120px;
-            background: linear-gradient(135deg, #fff9c4 0%, #fff59d 100%);
             border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
             overflow: hidden;
+            flex-shrink: 0;
         }
 
-        .product-image::before {
-            content: '米色';
-            position: absolute;
-            left: 5px;
-            writing-mode: vertical-rl;
-            font-size: 16px;
-            color: #666;
-            font-weight: 500;
-        }
-
-        .product-image::after {
-            content: '🌾';
-            font-size: 40px;
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .product-info {
@@ -336,7 +323,9 @@
 
         <!-- 产品信息卡片 -->
         <div class="product-card">
-            <div class="product-image"></div>
+            <div class="product-image">
+                <img src="resource/millet.jpeg" alt="小米">
+            </div>
             <div class="product-info">
                 <div class="product-name">小米</div>
                 <div class="product-detail">单位: 斤</div>
