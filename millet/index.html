@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>产品溯源信息</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 750px;
+            margin: 0 auto;
+            background-color: #fff;
+        }
+
+        /* 顶部溯源码 */
+        .trace-code-header {
+            background-color: #e8f5e9;
+            padding: 15px 20px;
+            text-align: center;
+            color: #2e7d32;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* 产品信息卡片 */
+        .product-card {
+            background-color: #fff;
+            border: 1px solid #c8e6c9;
+            border-radius: 8px;
+            margin: 15px;
+            padding: 15px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .product-image {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #fff9c4 0%, #fff59d 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image::before {
+            content: '米色';
+            position: absolute;
+            left: 5px;
+            writing-mode: vertical-rl;
+            font-size: 16px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .product-image::after {
+            content: '🌾';
+            font-size: 40px;
+        }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .product-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .product-detail {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        /* 标签页导航 */
+        .tabs {
+            background-color: #e8f5e9;
+            display: flex;
+            padding: 0 15px;
+            position: relative;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px 10px;
+            text-align: center;
+            background-color: transparent;
+            border: none;
+            color: #2e7d32;
+            font-size: 15px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background-color: #fff;
+            color: #2e7d32;
+            font-weight: 600;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #fff;
+        }
+
+        /* 内容区域 */
+        .content-area {
+            background-color: #fff;
+            min-height: 400px;
+            padding: 20px 15px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* 溯源信息样式 */
+        .trace-item {
+            margin-bottom: 20px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .trace-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            background-color: #4caf50;
+            border-radius: 50%;
+        }
+
+        .trace-item::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 17px;
+            width: 2px;
+            height: calc(100% + 3px);
+            background-color: #c8e6c9;
+        }
+
+        .trace-item:last-child::after {
+            display: none;
+        }
+
+        .trace-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .trace-detail {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        /* 检测报告样式 */
+        .report-card {
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .report-title {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .report-info {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .report-info strong {
+            color: #333;
+        }
+
+        .report-image {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .report-image:last-child {
+            margin-bottom: 0;
+        }
+
+        /* 企业信息样式 */
+        .info-section {
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .info-item {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .company-logo {
+            width: 150px;
+            height: 150px;
+            margin: 20px auto;
+            background: linear-gradient(135deg, #fff9c4 0%, #fff59d 100%);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid #4caf50;
+            position: relative;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff9800;
+            margin-bottom: 5px;
+        }
+
+        .logo-text-en {
+            font-size: 14px;
+            color: #ff9800;
+            font-weight: 600;
+        }
+
+        .company-description {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.8;
+            text-align: justify;
+        }
+
+        .company-description p {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部溯源码 -->
+        <div class="trace-code-header">
+            溯源码: SDP068810000162706157189
+        </div>
+
+        <!-- 产品信息卡片 -->
+        <div class="product-card">
+            <div class="product-image"></div>
+            <div class="product-info">
+                <div class="product-name">小米</div>
+                <div class="product-detail">单位: 斤</div>
+                <div class="product-detail">产地: 藁城区振华农副产品加工厂</div>
+            </div>
+        </div>
+
+        <!-- 标签页导航 -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('trace')">溯源信息</button>
+            <button class="tab" onclick="switchTab('report')">检测报告</button>
+            <button class="tab" onclick="switchTab('company')">企业信息</button>
+        </div>
+
+        <!-- 内容区域 -->
+        <div class="content-area">
+            <!-- 溯源信息 -->
+            <div id="trace" class="tab-content active">
+                <div class="trace-item">
+                    <div class="trace-title">下单</div>
+                    <div class="trace-detail">32302部队-机关</div>
+                    <div class="trace-detail">下单数量: 10.00斤</div>
+                    <div class="trace-detail">归属单号: DD250610090334822355</div>
+                    <div class="trace-detail">下单时间: 2025-06-10 09:03:33</div>
+                </div>
+                <div class="trace-item">
+                    <div class="trace-title">采购</div>
+                </div>
+                <div class="trace-item">
+                    <div class="trace-title">分拣</div>
+                    <div class="trace-detail">分拣员: 刘云硕</div>
+                    <div class="trace-detail">分拣时间: 2025-06-12 14:10:52</div>
+                </div>
+                <div class="trace-item">
+                    <div class="trace-title">配送</div>
+                    <div class="trace-detail">配送司机: 司机1</div>
+                    <div class="trace-detail">配送时间: 2025-06-12 15:55:03</div>
+                </div>
+                <div class="trace-item">
+                    <div class="trace-title">签收</div>
+                    <div class="trace-detail">32302部队-机关</div>
+                    <div class="trace-detail">发货数量: 10.00斤</div>
+                    <div class="trace-detail">退货数量: 0.00</div>
+                </div>
+            </div>
+
+            <!-- 检测报告 -->
+            <div id="report" class="tab-content">
+                <img src="zizhi/zizhi0.jpeg" alt="资质证书1" class="report-image">
+                <img src="zizhi/zizhi1.jpeg" alt="资质证书2" class="report-image">
+                <img src="zizhi/zizhi2.jpeg" alt="资质证书3" class="report-image">
+            </div>
+
+            <!-- 企业信息 -->
+            <div id="company" class="tab-content">
+                <div class="info-section">
+                    <div class="section-title">基本信息</div>
+                    <div class="info-item">联系电话: 13102168561</div>
+                    <div class="info-item">联系地址: 天津市蓟州区东施古镇韩家筏村路南200米</div>
+                </div>
+                <div class="info-section">
+                    <div class="section-title">公司简介</div>
+                    <div class="company-logo">
+                        <div class="logo-text">晟军</div>
+                        <div class="logo-text-en">SHENG JUN</div>
+                    </div>
+                    <div class="company-description">
+                        <p>天津晟军供应链管理有限公司，是一家坐落于天津市蓟州区东施古镇的一家综合性的供应商，公司以副食品供应链管理服务为主营业务，一直致力于副食品配送、超市设立管理服务业务。</p>
+                        
+                        <p><strong>一、合作单位:</strong></p>
+                        <p>现公司与多家知名企业，武警部队，解放军，大型企业在副食品配送、超市服务有着广泛深入的合作。</p>
+                        
+                        <p><strong>1、武警部队：</strong></p>
+                        <p>武警天津市总队、武警天津市总队执勤第一支队、武警天津市总队执勤第二支队、武警天津市总队执勤第三支队、武警天津市总队执勤第四支队、武警天津市总队机动支队、武警天津市总队医院、武警天津市总队保机关食堂、武警天津市总队保障部保障大队、中国人民武装警察部队第一机动总队特战第二支队、中国人民武装警察部队第一机动总队机动第四支队、中国人民武装警察部队第一机动总队机动第九支队、中国人民武装警察部队沧州支队、中国人民武装警察部队秦皇岛支队、中国人民武装警察部队指挥学院</p>
+                        
+                        <p><strong>2、解放军：</strong></p>
+                        <p>中国人民解放军32302部队60分队、72506部队85分队、中国人民解放军93792部队、中国人民解放军32090部队、中国人民解放军93756部队、中国人民解放军陆军军事交通学院</p>
+                        
+                        <p><strong>3、大型企业</strong></p>
+                        <p>得力集团有限公司、耕德农业发展集团有限公司、宏鸿农产品集团有限公司</p>
+                        
+                        <p><strong>4、监狱</strong></p>
+                        <p>天津市未成年犯管教所、天津市西青监狱、天津市河西监狱、天津市长泰监狱、天津市梨园监狱、天津市康宁监狱、天津市女子监狱、天津市新生医院、天津市监狱、天津市杨柳青监狱、天津市李港监狱、天津市滨海监狱、天津市津西监狱</p>
+                        
+                        <p><strong>5、政府机构</strong></p>
+                        <p>天津市消防救援总队训练与战勤保障支队、中国共产党天津市纪律检查委员会</p>
+                        
+                        <p><strong>6.军事机关单位</strong></p>
+                        <p>和平区人武部</p>
+                        
+                        <p><strong>7.学院</strong></p>
+                        <p>天津铁道职业技术学院</p>
+                        
+                        <p>在和这些优秀企业合作过程中，我公司积极汲取行业中先进的管理模式和技术，综合客户的实际应用和需求，在完善副食品配送等方面，能够与业主、甲方代表积极配合，并累积了丰富的技术经验和实施资源。</p>
+                        
+                        <p><strong>二、专业的技术服务团队</strong></p>
+                        <p>公司已经取得各种资质等级证书，不断提升公司业务能力的管理水平。公司拥有专业的技术服务团队，拥有管理人员30余人，大中型检测设备10多台（套），专用车辆20余辆，设备配套齐全。</p>
+                        
+                        <p>在未来，公司将一如既往的以"薄利、保质、守约、重义"为经营方针，以超标准的质量为目标，构筑"信息化、管理化、人性化"的服务平台，全力打造晟军供应链品牌，朝着行业的创新者和引领者的方向进发。</p>
+                        
+                        <p><strong>公司服务理念：</strong>质量第一，诚信为本，顾客至上！</p>
+                        <p><strong>公司价值观：</strong>求实、进取、协同、分享</p>
+                        <p><strong>公司愿景：</strong>成为中国副食品配送行业的领军者！</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            // 隐藏所有内容
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // 移除所有标签的active状态
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // 显示选中的内容
+            document.getElementById(tabName).classList.add('active');
+
+            // 激活对应的标签
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
